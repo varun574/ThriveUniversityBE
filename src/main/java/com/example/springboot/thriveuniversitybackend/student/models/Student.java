@@ -1,6 +1,7 @@
 package com.example.springboot.thriveuniversitybackend.student.models;
 
 import com.example.springboot.thriveuniversitybackend.validators.annotations.Password;
+import jakarta.validation.Valid;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,6 +15,7 @@ public class Student {
     private String name;
     private boolean isRegistered = false;
     private String rollNo;
+    @Valid
     private PersonalInfo personalInfo;
 
     public Student(String email, String password, String name, boolean isRegistered, String rollNo, PersonalInfo personalInfo) {

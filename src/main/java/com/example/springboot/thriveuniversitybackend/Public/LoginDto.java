@@ -1,4 +1,4 @@
-package com.example.springboot.thriveuniversitybackend.common;
+package com.example.springboot.thriveuniversitybackend.Public;
 
 import com.example.springboot.thriveuniversitybackend.validators.annotations.Password;
 import jakarta.validation.constraints.Pattern;

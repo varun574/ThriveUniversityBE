@@ -1,4 +1,4 @@
-package com.example.springboot.thriveuniversitybackend.common;
+package com.example.springboot.thriveuniversitybackend.Public;
 
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
 import com.example.springboot.thriveuniversitybackend.student.exceptions.UserNotFoundException;
@@ -32,7 +32,7 @@ public class PublicController {
             session.setAttribute("rollNo", student.getRollNo());
             session.setAttribute("email", student.getEmail());
         }
-        return ResponseEntity.ok(studentService.toStudentDto(student));
+        return ResponseEntity.ok(studentService.transformtoStudentDto(student));
     }
 
     @PostMapping("/logout")
