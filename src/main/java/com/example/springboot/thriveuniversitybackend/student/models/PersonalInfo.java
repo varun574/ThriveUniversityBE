@@ -8,6 +8,7 @@ import com.example.springboot.thriveuniversitybackend.validators.annotations.Nul
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
 
@@ -24,6 +25,8 @@ public class PersonalInfo {
     private String motherName;
     @Past(message = "Earlier date must be picked")
     private LocalDate dob;
+    @Email
+    private String personalEmail;
     @NullableNonEmpty(message = "Mobile number must not be empty")
     @Pattern(regexp = "^(?:\\+91)?\\d{10}$", message = "Mobile must be valid phone number.")
     private String mobileNumber;
@@ -42,10 +45,11 @@ public class PersonalInfo {
     @NullableNonEmpty(message = "Address must not be empty")
     private String address;
 
-    public PersonalInfo(String fatherName, String motherName, LocalDate dob, String mobileNumber, String department, String section, String educationLevel, String address) {
+    public PersonalInfo(String fatherName, String motherName, LocalDate dob, String personalEmail, String mobileNumber, String department, String section, String educationLevel, String address) {
         this.fatherName = fatherName;
         this.motherName = motherName;
         this.dob = dob;
+        this.personalEmail = personalEmail;
         this.mobileNumber = mobileNumber;
         this.department = department;
         this.section = section;
@@ -79,6 +83,14 @@ public class PersonalInfo {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public String getPersonalEmail() {
+        return personalEmail;
+    }
+
+    public void setPersonalEmail(String personalEmail) {
+        this.personalEmail = personalEmail;
     }
 
     public String getMobileNumber() {
@@ -127,6 +139,7 @@ public class PersonalInfo {
                 "fatherName='" + fatherName + '\'' +
                 ", motherName='" + motherName + '\'' +
                 ", dob=" + dob +
+                ", personalEmail='" + personalEmail + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", department='" + department + '\'' +
                 ", section='" + section + '\'' +
@@ -134,5 +147,4 @@ public class PersonalInfo {
                 ", address='" + address + '\'' +
                 '}';
     }
-
 }

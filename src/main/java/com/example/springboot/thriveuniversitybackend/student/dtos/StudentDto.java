@@ -11,6 +11,6 @@ public class StudentDto {
     private String email;
     @NotEmpty(message = "Name must not be empty")
     private String name;
-    @Pattern(regexp = "^\\d{2}B81A\\d{2}(\\w\\d|\\d{2})$", message = "Roll number is must be in specified format.")
+    @Pattern(regexp = "^\\d{2}B81A\\d{2}(\\w\\d|\\d{2})$", message = "Roll number must be in specified format.")
     private String rollNo;
 }

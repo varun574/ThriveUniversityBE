@@ -6,6 +6,7 @@ import com.example.springboot.thriveuniversitybackend.firebase.FileService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.PersonalInfoDto;
 import com.example.springboot.thriveuniversitybackend.student.dtos.ProfileDto;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
+import com.example.springboot.thriveuniversitybackend.student.exceptions.OldPasswardDoNotMatchException;
 import com.example.springboot.thriveuniversitybackend.student.models.PersonalInfo;
 import com.example.springboot.thriveuniversitybackend.student.models.Student;
 import com.example.springboot.thriveuniversitybackend.student.repositories.StudentRepository;
@@ -133,6 +134,16 @@ public class StudentService {
         }
     }
 
+    public void updatePassword(String rollNo, String oldPassword, String newPassword) {
+        Student student = repository.findByRollNo(rollNo);
+        if(student.getPassword().equals(oldPassword)){
+            student.setPassword(newPassword);
+            repository.save(student);
+        }
+        else{
+            throw new OldPasswardDoNotMatchException("Old Password do not match.");
+        }
+    }
 }
 
 

@@ -1,6 +1,9 @@
 package com.example.springboot.thriveuniversitybackend.student.controllers;
 
+import com.example.springboot.thriveuniversitybackend.otp.OTPExpiredException;
+import com.example.springboot.thriveuniversitybackend.otp.OTPMismatchException;
 import com.example.springboot.thriveuniversitybackend.student.dtos.ErrorResponse;
+import com.example.springboot.thriveuniversitybackend.student.exceptions.OldPasswardDoNotMatchException;
 import com.example.springboot.thriveuniversitybackend.student.exceptions.UserNotFoundException;
 import com.example.springboot.thriveuniversitybackend.student.exceptions.UserNotLoggedInException;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +22,7 @@ import java.util.Set;
 @ControllerAdvice
 public class StudentExceptionController {
 
-    @ExceptionHandler({UserNotLoggedInException.class, UserNotFoundException.class})
+    @ExceptionHandler({UserNotLoggedInException.class, UserNotFoundException.class, OldPasswardDoNotMatchException.class, OTPExpiredException.class, OTPMismatchException.class})
     public ResponseEntity<ErrorResponse> exception(RuntimeException exception, HttpSession session){
         session.invalidate();
         ErrorResponse response = new ErrorResponse(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), new HashMap<>());

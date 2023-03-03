@@ -81,7 +81,7 @@ public class FileService {
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
     }
 
-    private File convertToFile(MultipartFile multipartFile) throws IOException {
+    public File convertToFile(MultipartFile multipartFile) throws IOException {
         File file = new File(multipartFile.getOriginalFilename());
         FileOutputStream outputStream = new FileOutputStream(file);
         outputStream.write(multipartFile.getBytes());
