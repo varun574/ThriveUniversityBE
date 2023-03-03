@@ -1,9 +1,11 @@
 package com.example.springboot.thriveuniversitybackend.student.controllers;
 
 import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.otp.OTPService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.PersonalInfoDto;
 import com.example.springboot.thriveuniversitybackend.student.dtos.ProfileDto;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
+import com.example.springboot.thriveuniversitybackend.student.dtos.UpdatePasswordDto;
 import com.example.springboot.thriveuniversitybackend.student.services.StudentService;
 import com.example.springboot.thriveuniversitybackend.student.exceptions.UserNotLoggedInException;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +38,6 @@ public class StudentController {
             throw new UserNotLoggedInException("Please log in to view your profile !!");
         }
         String rollNo = (String) session.getAttribute("rollNo");
-        log.debug("Roll number : "+rollNo);
         ProfileDto profile = studentService.toProfileDto(rollNo);
         return ResponseEntity.ok(profile);
     }
@@ -46,7 +47,6 @@ public class StudentController {
         if(session.isNew()) {
             throw new UserNotLoggedInException("Please log in to view your profile !!");
         }
-        System.out.println(personalInfoDto);
         String rollNo = (String) session.getAttribute("rollNo");
         ProfileDto profile = studentService.updateProfile(personalInfoDto, rollNo);
         return ResponseEntity.ok(profile);
@@ -55,7 +55,7 @@ public class StudentController {
     @PostMapping("/uploadProfilePicture")
     public ResponseEntity uploadProfilePicture(@RequestParam("file") MultipartFile multipartFile, HttpSession session){
         if(session.isNew()) {
-            throw new UserNotLoggedInException("Please log in to view your profile !!");
+            throw new UserNotLoggedInException("Please log in to update your profile picture !!");
         }
         try {
             String rollNo = session.getAttribute("rollNo").toString();
@@ -64,6 +64,16 @@ public class StudentController {
             throw new RuntimeException(e);
         }
         return ResponseEntity.ok("Uploaded Successfully");
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity updatePassword(@RequestBody @Valid UpdatePasswordDto updatePasswordDto, HttpSession session){
+        if(session.isNew()) {
+            throw new UserNotLoggedInException("Please log in to update your profile picture !!");
+        }
+        String rollNo = session.getAttribute("rollNo").toString();
+        studentService.updatePassword(rollNo, updatePasswordDto.getOldPassword(), updatePasswordDto.getNewPassword());
+        return ResponseEntity.ok("Password updated Successfully");
     }
 
     @GetMapping("/download")

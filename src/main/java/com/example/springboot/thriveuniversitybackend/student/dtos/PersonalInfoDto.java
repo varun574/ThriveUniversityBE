@@ -10,9 +10,9 @@ import java.time.LocalDate;
 public class PersonalInfoDto {
     private String fatherName;
     private String motherName;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dob;
+    private String personalEmail;
     private String mobileNumber;
     private String department;
     private String section;
