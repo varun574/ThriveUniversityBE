@@ -53,12 +53,12 @@ public class OTPService {
         cache.invalidate(key);
     }
 
-    public void sendOtpMail(String recipient, String rollNumber){
+    public void sendOtpMail(String email, String recipient, String userName){
         String subject = "OTP for Thrive Password verification";
         String template = new String("src/main/java/com/example/springboot/thriveuniversitybackend/otp/OtpTemplate.html");
-        int otp = generateOTP(rollNumber);
+        int otp = generateOTP(email);
         HashMap<String, String> replacements = new HashMap();
-        replacements.put("user", rollNumber);
+        replacements.put("user", userName);
         replacements.put("otp", String.valueOf(otp));
         mailService.sendMail(new EmailDetails(new String[]{recipient}, new EmailTemplate(template, replacements), subject), null);
     }
