@@ -1,16 +1,14 @@
-package com.example.springboot.thriveuniversitybackend.student.dtos;
+package com.example.springboot.thriveuniversitybackend.Public.dtos;
 
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class PersonalInfoDto {
+public class ProfileDto {
+    private String rollNo;
     private String fatherName;
     private String motherName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dob;
     private String personalEmail;
     private String mobileNumber;
@@ -19,4 +17,3 @@ public class PersonalInfoDto {
     private String educationLevel;
     private String address;
 }
-

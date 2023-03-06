@@ -1,4 +1,4 @@
-package com.example.springboot.thriveuniversitybackend.student.exceptions;
+package com.example.springboot.thriveuniversitybackend.Public.exceptions;
 
 public class OldPasswardDoNotMatchException extends RuntimeException{
     public OldPasswardDoNotMatchException(String message) {

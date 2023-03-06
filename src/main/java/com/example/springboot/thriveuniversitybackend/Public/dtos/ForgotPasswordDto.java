@@ -1,4 +1,4 @@
-package com.example.springboot.thriveuniversitybackend.Public;
+package com.example.springboot.thriveuniversitybackend.Public.dtos;
 
 import com.example.springboot.thriveuniversitybackend.validators.annotations.FieldsValueMatch;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,6 +15,6 @@ public class ForgotPasswordDto {
     private String newPassword;
     @NotEmpty
     private String confirmPassword;
-    @Pattern(regexp = "^\\d{2}B81A\\d{2}(\\w\\d|\\d{2})$", message = "Roll number must be in specified format.")
-    private String rollNo;
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+@thrive.ac.in$", message = "Must be well formed mail address.")
+    private String email;
 }

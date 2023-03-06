@@ -1,4 +1,4 @@
-package com.example.springboot.thriveuniversitybackend.student.dtos;
+package com.example.springboot.thriveuniversitybackend.Public.dtos;
 
 import com.example.springboot.thriveuniversitybackend.validators.annotations.FieldsValueMatch;
 import jakarta.validation.constraints.NotEmpty;
