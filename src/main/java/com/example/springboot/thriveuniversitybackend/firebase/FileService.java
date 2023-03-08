@@ -19,9 +19,7 @@ import java.net.FileNameMap;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -67,6 +65,14 @@ public class FileService {
 
         URL signedUrl = blob.signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.signWith(ServiceAccountCredentials.fromStream(serviceAccount.getInputStream())));
         return signedUrl.toString();
+    }
+
+    public List<String> downloadMultiple(List<String> objectIds) throws IOException {
+        List<String> documentUrls = new ArrayList<>();
+        for (String objectId:objectIds){
+            documentUrls.add(download(objectId));
+        }
+        return documentUrls;
     }
 
     public String getDownloadURL(String filename){

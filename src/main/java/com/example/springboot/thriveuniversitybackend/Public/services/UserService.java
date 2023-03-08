@@ -1,7 +1,7 @@
 package com.example.springboot.thriveuniversitybackend.Public.services;
 
 import com.example.springboot.thriveuniversitybackend.Public.dtos.LoginDto;
-import com.example.springboot.thriveuniversitybackend.Public.dtos.ProfileDto;
+import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdateProfileDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UserRegisterDto;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPasswardDoNotMatchException;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
@@ -70,15 +70,15 @@ public class UserService {
         }
     }
 
-    public Object updateProfile(String type, String email, ProfileDto profileDto) {
+    public Object updateProfile(String type, String email, UpdateProfileDto updateProfileDto) {
         User user = repository.findByEmail(email);
         if(type.equals(UserTypes.STUDENT.name())){
-            StudentDto studentDto = modelMapper.map(profileDto, StudentDto.class);
+            StudentDto studentDto = modelMapper.map(updateProfileDto, StudentDto.class);
             StudentDto updatedStudentDto = studentService.updateProfileByUserId(studentDto, user.getId());
             return updatedStudentDto;
         }
         else if(type.equals(UserTypes.TEACHER.name())){
-            TeacherDto studentDto = modelMapper.map(profileDto, TeacherDto.class);
+            TeacherDto studentDto = modelMapper.map(updateProfileDto, TeacherDto.class);
             TeacherDto updatedTeacherDto = teacherService.updateProfileByUserId(studentDto, user.getId());
             return updatedTeacherDto;
         }
@@ -132,5 +132,10 @@ public class UserService {
             //admin
         }
         otpService.sendOtpMail(email, personalEmail, user.getName());
+    }
+
+    public String getUserIdByEmail(String email) {
+        User user = findUserByEmail(email);
+        return user.getId();
     }
 }

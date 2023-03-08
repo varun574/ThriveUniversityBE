@@ -5,6 +5,7 @@ import com.example.springboot.thriveuniversitybackend.enums.EducationLevel;
 import com.example.springboot.thriveuniversitybackend.enums.Section;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.EnumValue;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.NullableNonEmpty;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Past;
@@ -26,6 +27,8 @@ public class Student {
     @NotEmpty(message = "Roll number must not be empty")
     @Pattern(regexp = "^\\d{2}B81A\\d{2}(\\w\\d|\\d{2})$", message = "Roll number must be in specified format.")
     private String rollNo;
+    @Valid
+    private AcademicYear academicYear;
     @Indexed
     @NotEmpty(message = "User Id must not be empty")
     private String userId;

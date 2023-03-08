@@ -23,13 +23,13 @@ public class StudentService {
     private StudentRepository repository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private FileService fileService;
     private static void setAttributesIfNull(Student student, Student updatedStudent) {
         if(updatedStudent.getUserId() == null)
             updatedStudent.setUserId(student.getUserId());
         if(updatedStudent.getRollNo() == null)
             updatedStudent.setRollNo(student.getRollNo());
+        if(updatedStudent.getAcademicYear() == null)
+            updatedStudent.setAcademicYear(student.getAcademicYear());
         if(updatedStudent.getPersonalEmail() == null)
             updatedStudent.setPersonalEmail(student.getPersonalEmail());
         if(updatedStudent.getFatherName() == null)

@@ -1,6 +1,5 @@
 package com.example.springboot.thriveuniversitybackend.enums;
 
-import org.springframework.stereotype.Component;
 
 
 public enum Department {

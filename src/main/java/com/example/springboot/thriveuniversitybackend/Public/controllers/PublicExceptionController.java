@@ -1,9 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.Public.controllers;
 
-import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPasswardDoNotMatchException;
-import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserAlreadyLoggedInException;
-import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
-import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotLoggedInException;
+import com.example.springboot.thriveuniversitybackend.Public.exceptions.*;
 import com.example.springboot.thriveuniversitybackend.otp.OTPExpiredException;
 import com.example.springboot.thriveuniversitybackend.otp.OTPMismatchException;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.ErrorResponseDto;
@@ -31,6 +28,14 @@ public class PublicExceptionController {
     @ExceptionHandler({UserAlreadyLoggedInException.class, OldPasswardDoNotMatchException.class})
     public ResponseEntity<ErrorResponseDto> exception(RuntimeException exception){
         ErrorResponseDto response = new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), new HashMap<>());
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({UniqueConstraintException.class})
+    public ResponseEntity<ErrorResponseDto> exception(UniqueConstraintException exception){
+        HashMap<String , String> errors = new HashMap<>();
+        errors.put(exception.fieldName, exception.fieldName+" already exists");
+        ErrorResponseDto response = new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), errors);
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler({ConstraintViolationException.class})
