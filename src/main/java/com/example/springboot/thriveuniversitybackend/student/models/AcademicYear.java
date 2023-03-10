@@ -4,11 +4,11 @@ import com.example.springboot.thriveuniversitybackend.enums.Semester;
 import com.example.springboot.thriveuniversitybackend.enums.Year;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.EnumValue;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.NullableNonEmpty;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class AcademicYear {
     @EnumValue(enumC = Year.class, message = "Year must be chosen from the given accepted values")
     @NullableNonEmpty(message = "Year must not be empty")

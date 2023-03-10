@@ -1,6 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.enums;
 
-public enum Attachments{
+public enum AttachmentTypes {
 
     PROFILE_PICTURE,
     ASSIGNMENT,

@@ -1,6 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.mail;
 
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
+import com.example.springboot.thriveuniversitybackend.attachment.FileService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;

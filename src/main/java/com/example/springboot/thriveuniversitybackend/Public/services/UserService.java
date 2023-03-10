@@ -7,9 +7,9 @@ import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPassw
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
 import com.example.springboot.thriveuniversitybackend.Public.models.User;
 import com.example.springboot.thriveuniversitybackend.Public.repositories.UserRepository;
-import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.example.springboot.thriveuniversitybackend.enums.UserTypes;
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
+import com.example.springboot.thriveuniversitybackend.attachment.FileService;
 import com.example.springboot.thriveuniversitybackend.otp.OTPService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
 import com.example.springboot.thriveuniversitybackend.student.services.StudentService;
@@ -97,7 +97,7 @@ public class UserService {
         User user = repository.findByEmail(email);
         String profilePictureURL = "";
         try {
-            profilePictureURL = fileService.download(user.getId().hashCode()+"_"+Attachments.PROFILE_PICTURE.name());
+            profilePictureURL = fileService.download(user.getId().hashCode()+"_"+ AttachmentTypes.PROFILE_PICTURE.name());
         } catch (IOException e) {
             profilePictureURL = null;
         }

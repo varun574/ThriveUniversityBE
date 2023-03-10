@@ -1,5 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.task.models;
 
+import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
 import com.example.springboot.thriveuniversitybackend.enums.AssignedToTypes;
 import com.example.springboot.thriveuniversitybackend.student.models.AcademicYear;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.EnumValue;
@@ -13,11 +14,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @Document("assignment")
@@ -33,7 +31,7 @@ public class Assignment {
     @Valid
     @NotNull
     private AcademicYear academicYear;
-    private List<String> documentURLs;
+    private List<Attachment> attachments;
     @Indexed
     @NotEmpty
     private String createdBy;

@@ -1,6 +1,5 @@
 package com.example.springboot.thriveuniversitybackend.student.services;
 
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
 import com.example.springboot.thriveuniversitybackend.student.models.Student;
 import com.example.springboot.thriveuniversitybackend.student.repositories.StudentRepository;
@@ -41,7 +40,7 @@ public class StudentService {
         if(updatedStudent.getMobileNumber() == null)
             updatedStudent.setMobileNumber(student.getMobileNumber());
         if(updatedStudent.getSection() == null)
-            student.setSection(student.getSection());
+            updatedStudent.setSection(student.getSection());
         if(updatedStudent.getDepartment() == null)
             updatedStudent.setDepartment(student.getDepartment());
         if(updatedStudent.getEducationLevel() == null)
@@ -68,8 +67,8 @@ public class StudentService {
             updatedStudent.setId(student.getId());
             setAttributesIfNull(student, updatedStudent);
         }
-        repository.save(updatedStudent);
-        StudentDto updatedStudentDto = transformtoStudentDto(student, modelMapper);
+        updatedStudent = repository.save(updatedStudent);
+        StudentDto updatedStudentDto = transformtoStudentDto(updatedStudent, modelMapper);
         return updatedStudentDto;
     }
 

@@ -15,4 +15,9 @@ public interface AssignmentRepository extends MongoRepository<Assignment, String
     List<Assignment> findAllByStudentDetails(String userId, AcademicYear academicYear, String department, String className);
 
     List<Assignment> findByCreatedBy(String userId);
+
+    Assignment findByIdAndCreatedBy(String id, String userId);
+
+    @Query("{$and : [{id : ?0}, {academicYear : ?2}, { $or : [{assignedTo : ?1}, {assignedTo : ?3}, {assignedTo : ?4}]}]}")
+    Assignment findByIdAndStudentDetails(String assignmentId, String userId, AcademicYear academicYear, String department, String className);
 }

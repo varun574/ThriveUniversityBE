@@ -1,5 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.task.models;
 
+import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,7 @@ public class Submission {
     @Indexed
     @NotEmpty
     private String assignmentId;
-    @NotEmpty
-    private List<String> documentURLs;
+    private List<Attachment> documentURLs;
     @NotEmpty
     private LocalDate submittedOn;
 }

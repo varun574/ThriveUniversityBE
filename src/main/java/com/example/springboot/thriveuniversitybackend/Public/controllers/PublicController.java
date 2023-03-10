@@ -14,11 +14,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class PublicController {
@@ -26,7 +24,7 @@ public class PublicController {
     private OTPService otpService;
     @Autowired
     private UserService userService;
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<SuccessResponseDto> login(@RequestBody @Valid LoginDto loginDto, HttpSession session){
         if(!userService.isValidUser(loginDto)) {
             throw new UserNotFoundException("Please enter valid credentials");

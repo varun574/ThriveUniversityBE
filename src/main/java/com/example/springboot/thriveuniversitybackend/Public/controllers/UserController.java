@@ -3,7 +3,7 @@ package com.example.springboot.thriveuniversitybackend.Public.controllers;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdateProfileDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.SuccessResponseDto;
 import com.example.springboot.thriveuniversitybackend.Public.services.UserService;
-import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.example.springboot.thriveuniversitybackend.otp.OTPService;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotLoggedInException;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdatePasswordDto;
@@ -65,7 +65,7 @@ public class UserController {
         }
         try {
             String email = session.getAttribute("email").toString();
-            userService.uploadProfilePicture(email, multipartFile, Attachments.PROFILE_PICTURE.name());
+            userService.uploadProfilePicture(email, multipartFile, AttachmentTypes.PROFILE_PICTURE.name());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
