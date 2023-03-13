@@ -1,15 +1,15 @@
 package com.example.springboot.thriveuniversitybackend.Public.services;
 
 import com.example.springboot.thriveuniversitybackend.Public.dtos.LoginDto;
-import com.example.springboot.thriveuniversitybackend.Public.dtos.ProfileDto;
+import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdateProfileDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UserRegisterDto;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPasswardDoNotMatchException;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
 import com.example.springboot.thriveuniversitybackend.Public.models.User;
 import com.example.springboot.thriveuniversitybackend.Public.repositories.UserRepository;
-import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.example.springboot.thriveuniversitybackend.enums.UserTypes;
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
+import com.example.springboot.thriveuniversitybackend.attachment.FileService;
 import com.example.springboot.thriveuniversitybackend.otp.OTPService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
 import com.example.springboot.thriveuniversitybackend.student.services.StudentService;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.example.springboot.thriveuniversitybackend.utils.RandomStringGenerator.generateRandomString;
 
@@ -70,15 +71,15 @@ public class UserService {
         }
     }
 
-    public Object updateProfile(String type, String email, ProfileDto profileDto) {
+    public Object updateProfile(String type, String email, UpdateProfileDto updateProfileDto) {
         User user = repository.findByEmail(email);
         if(type.equals(UserTypes.STUDENT.name())){
-            StudentDto studentDto = modelMapper.map(profileDto, StudentDto.class);
+            StudentDto studentDto = modelMapper.map(updateProfileDto, StudentDto.class);
             StudentDto updatedStudentDto = studentService.updateProfileByUserId(studentDto, user.getId());
             return updatedStudentDto;
         }
         else if(type.equals(UserTypes.TEACHER.name())){
-            TeacherDto studentDto = modelMapper.map(profileDto, TeacherDto.class);
+            TeacherDto studentDto = modelMapper.map(updateProfileDto, TeacherDto.class);
             TeacherDto updatedTeacherDto = teacherService.updateProfileByUserId(studentDto, user.getId());
             return updatedTeacherDto;
         }
@@ -97,8 +98,8 @@ public class UserService {
         User user = repository.findByEmail(email);
         String profilePictureURL = "";
         try {
-            profilePictureURL = fileService.download(user.getId().hashCode()+"_"+Attachments.PROFILE_PICTURE.name());
-        } catch (IOException e) {
+            profilePictureURL = fileService.download(user.getId().hashCode()+"_"+ AttachmentTypes.PROFILE_PICTURE.name());
+        } catch (IOException | RuntimeException e) {
             profilePictureURL = null;
         }
         if(type.equals(UserTypes.STUDENT.name())){
@@ -133,4 +134,15 @@ public class UserService {
         }
         otpService.sendOtpMail(email, personalEmail, user.getName());
     }
+
+    public String getUserIdByEmail(String email) {
+        User user = findUserByEmail(email);
+        return user.getId();
+    }
+
+    public String getEmailById(String userId) {
+        Optional<User> user = repository.findById(userId);
+        return user.orElseThrow(() -> new UserNotFoundException("User Not found")).getEmail();
+    }
+
 }

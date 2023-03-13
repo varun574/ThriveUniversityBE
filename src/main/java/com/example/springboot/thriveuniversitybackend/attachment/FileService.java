@@ -1,9 +1,10 @@
-package com.example.springboot.thriveuniversitybackend.firebase;
+package com.example.springboot.thriveuniversitybackend.attachment;
 
-import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
+import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -19,9 +20,7 @@ import java.net.FileNameMap;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -54,7 +53,7 @@ public class FileService {
     public void upload(MultipartFile multipartFile, String uploadedFileName) throws IOException {
         String filename = multipartFile.getOriginalFilename();
         String contentType = fileNameMap.getContentTypeFor(filename);
-        if(uploadedFileName.equals(Attachments.ANONYMOUS.name()))
+        if(uploadedFileName.equals(AttachmentTypes.ANONYMOUS.name()))
         uploadedFileName = generateFileName(filename);
         File file = convertToFile(multipartFile);
         uploadFile(file, uploadedFileName, contentType);
@@ -64,9 +63,32 @@ public class FileService {
     public String download(String objectId) throws IOException {
         ClassPathResource serviceAccount = new ClassPathResource(firebaseSDKResourcePath);
         Blob blob = storage.get(BlobId.of(environment.getProperty("firebase.storage.bucket.name"),objectId));
+        if(blob == null){
+            throw new RuntimeException("File not found");
+        }
 
         URL signedUrl = blob.signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.signWith(ServiceAccountCredentials.fromStream(serviceAccount.getInputStream())));
         return signedUrl.toString();
+    }
+
+    public List<String> downloadMultiple(List<String> objectIds) throws IOException {
+        List<String> documentUrls = new ArrayList<>();
+        for (String objectId:objectIds){
+            documentUrls.add(download(objectId));
+        }
+        return documentUrls;
+    }
+
+    public List<String> deleteMultiple(List<String> objectIds){
+        List<String> undeletedFiles = new ArrayList<>();
+        if(objectIds.isEmpty())
+            return undeletedFiles;
+        for (String objectId: objectIds
+             ) {
+            if(!(storage.get(BlobId.of(environment.getProperty("firebase.storage.bucket.name"),objectId)).delete()))
+                undeletedFiles.add(objectId);
+        }
+        return undeletedFiles;
     }
 
     public String getDownloadURL(String filename){

@@ -1,9 +1,9 @@
 package com.example.springboot.thriveuniversitybackend.Public.controllers;
 
-import com.example.springboot.thriveuniversitybackend.Public.dtos.ProfileDto;
+import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdateProfileDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.SuccessResponseDto;
 import com.example.springboot.thriveuniversitybackend.Public.services.UserService;
-import com.example.springboot.thriveuniversitybackend.enums.Attachments;
+import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.example.springboot.thriveuniversitybackend.otp.OTPService;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotLoggedInException;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdatePasswordDto;
@@ -49,12 +49,12 @@ public class UserController {
     }
 
     @PostMapping("/profile")
-    public ResponseEntity updateProfile(@RequestBody ProfileDto profileDto, HttpSession session){
+    public ResponseEntity updateProfile(@RequestBody UpdateProfileDto updateProfileDto, HttpSession session){
         if(session.isNew())
             throw new UserNotLoggedInException("Please log in!!");
         String type =(String) session.getAttribute("type");
         String email =(String) session.getAttribute("email");
-        Object updateProfile = userService.updateProfile(type, email, profileDto);
+        Object updateProfile = userService.updateProfile(type, email, updateProfileDto);
         return ResponseEntity.ok(new SuccessResponseDto("Updated Profile Successfully", updateProfile));
     }
 
@@ -65,7 +65,7 @@ public class UserController {
         }
         try {
             String email = session.getAttribute("email").toString();
-            userService.uploadProfilePicture(email, multipartFile, Attachments.PROFILE_PICTURE.name());
+            userService.uploadProfilePicture(email, multipartFile, AttachmentTypes.PROFILE_PICTURE.name());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

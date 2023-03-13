@@ -1,7 +1,7 @@
 package com.example.springboot.thriveuniversitybackend.student.services;
 
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
+import com.example.springboot.thriveuniversitybackend.student.models.AcademicYear;
 import com.example.springboot.thriveuniversitybackend.student.models.Student;
 import com.example.springboot.thriveuniversitybackend.student.repositories.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -23,13 +25,13 @@ public class StudentService {
     private StudentRepository repository;
     @Autowired
     private ModelMapper modelMapper;
-    @Autowired
-    private FileService fileService;
     private static void setAttributesIfNull(Student student, Student updatedStudent) {
         if(updatedStudent.getUserId() == null)
             updatedStudent.setUserId(student.getUserId());
         if(updatedStudent.getRollNo() == null)
             updatedStudent.setRollNo(student.getRollNo());
+        if(updatedStudent.getAcademicYear() == null)
+            updatedStudent.setAcademicYear(student.getAcademicYear());
         if(updatedStudent.getPersonalEmail() == null)
             updatedStudent.setPersonalEmail(student.getPersonalEmail());
         if(updatedStudent.getFatherName() == null)
@@ -41,7 +43,7 @@ public class StudentService {
         if(updatedStudent.getMobileNumber() == null)
             updatedStudent.setMobileNumber(student.getMobileNumber());
         if(updatedStudent.getSection() == null)
-            student.setSection(student.getSection());
+            updatedStudent.setSection(student.getSection());
         if(updatedStudent.getDepartment() == null)
             updatedStudent.setDepartment(student.getDepartment());
         if(updatedStudent.getEducationLevel() == null)
@@ -68,8 +70,8 @@ public class StudentService {
             updatedStudent.setId(student.getId());
             setAttributesIfNull(student, updatedStudent);
         }
-        repository.save(updatedStudent);
-        StudentDto updatedStudentDto = transformtoStudentDto(student, modelMapper);
+        updatedStudent = repository.save(updatedStudent);
+        StudentDto updatedStudentDto = transformtoStudentDto(updatedStudent, modelMapper);
         return updatedStudentDto;
     }
 
@@ -81,6 +83,24 @@ public class StudentService {
 
     public String getPersonalEmailByUserId(String userId) {
         return repository.findPersonalEmailByUserId(userId).getPersonalEmail();
+    }
+
+    public List<String> getRollNosByAcademicDetails(AcademicYear academicYear, String department, String section) {
+        return repository.findRollNosByAcademicDetails(academicYear, department, section).stream().map(Student::getRollNo).collect(Collectors.toList());
+    }
+
+    public List<String> getRollNosByDepartment(AcademicYear academicYear, List<String> departments) {
+        return repository.findRollNosByDepartment(academicYear, departments).stream().map(Student::getRollNo).collect(Collectors.toList());
+    }
+
+    public boolean checkIfRollNumbersExist(List<String> pendingRollNos) {
+        long count = repository.findAllByRollNo(pendingRollNos);
+        return pendingRollNos.size() == count;
+    }
+
+    public String getRollNoByUserId(String userId) {
+        Student student = repository.findByUserId(userId);
+        return student.getRollNo();
     }
 
 

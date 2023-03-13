@@ -1,6 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.teacher.services;
 
-import com.example.springboot.thriveuniversitybackend.firebase.FileService;
+import com.example.springboot.thriveuniversitybackend.attachment.FileService;
 import com.example.springboot.thriveuniversitybackend.teacher.dtos.TeacherDto;
 import com.example.springboot.thriveuniversitybackend.teacher.models.Teacher;
 import com.example.springboot.thriveuniversitybackend.teacher.repositories.TeacherRepository;
