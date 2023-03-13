@@ -63,6 +63,9 @@ public class FileService {
     public String download(String objectId) throws IOException {
         ClassPathResource serviceAccount = new ClassPathResource(firebaseSDKResourcePath);
         Blob blob = storage.get(BlobId.of(environment.getProperty("firebase.storage.bucket.name"),objectId));
+        if(blob == null){
+            throw new RuntimeException("File not found");
+        }
 
         URL signedUrl = blob.signUrl(1, TimeUnit.DAYS, Storage.SignUrlOption.signWith(ServiceAccountCredentials.fromStream(serviceAccount.getInputStream())));
         return signedUrl.toString();

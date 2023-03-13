@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.example.springboot.thriveuniversitybackend.utils.RandomStringGenerator.generateRandomString;
 
@@ -98,7 +99,7 @@ public class UserService {
         String profilePictureURL = "";
         try {
             profilePictureURL = fileService.download(user.getId().hashCode()+"_"+ AttachmentTypes.PROFILE_PICTURE.name());
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             profilePictureURL = null;
         }
         if(type.equals(UserTypes.STUDENT.name())){
@@ -138,4 +139,10 @@ public class UserService {
         User user = findUserByEmail(email);
         return user.getId();
     }
+
+    public String getEmailById(String userId) {
+        Optional<User> user = repository.findById(userId);
+        return user.orElseThrow(() -> new UserNotFoundException("User Not found")).getEmail();
+    }
+
 }

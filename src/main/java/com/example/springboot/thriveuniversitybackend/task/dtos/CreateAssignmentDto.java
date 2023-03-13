@@ -3,6 +3,8 @@ package com.example.springboot.thriveuniversitybackend.task.dtos;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 
 @Data
 @Builder
@@ -13,6 +15,6 @@ public class CreateAssignmentDto {
     private String year;
     private String semester;
     private String assignedToType;
-    private String assignedTo;
+    private List<String> assignedTo;
     private String deadline;
 }

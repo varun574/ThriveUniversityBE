@@ -4,6 +4,7 @@ import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
 import com.example.springboot.thriveuniversitybackend.enums.AssignedToTypes;
 import com.example.springboot.thriveuniversitybackend.student.models.AcademicYear;
 import com.example.springboot.thriveuniversitybackend.validators.annotations.EnumValue;
+import com.example.springboot.thriveuniversitybackend.validators.annotations.ValidAssignedTo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Future;
@@ -21,6 +22,7 @@ import java.util.List;
 @Document("assignment")
 @Data
 @NoArgsConstructor
+@ValidAssignedTo(message = "AssignedTo values are not valid or don't exist!!")
 public class Assignment {
     @Id
     private String id;
@@ -39,7 +41,7 @@ public class Assignment {
     @EnumValue(enumC = AssignedToTypes.class, message = "Assignment should be assigned to the valid type.")
     private String assignedToType;
     @NotEmpty
-    private String assignedTo;
+    private List<String> assignedTo;
     @Future
     @NotNull
     @JsonFormat(pattern="dd-MM-yyyy")

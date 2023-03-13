@@ -7,7 +7,6 @@ import com.example.springboot.thriveuniversitybackend.Public.dtos.ErrorResponseD
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -54,7 +53,8 @@ public class PublicExceptionController {
 
     @ExceptionHandler({UserUnauthorizedException.class})
     public ResponseEntity<ErrorResponseDto> exception(UserUnauthorizedException exception){
-        return ResponseEntity.ok(new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), null));
+        ErrorResponseDto response = new ErrorResponseDto(exception.getMessage(), HttpStatus.UNAUTHORIZED.value(), null);
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})

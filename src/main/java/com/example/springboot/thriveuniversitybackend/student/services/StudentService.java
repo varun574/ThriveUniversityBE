@@ -1,6 +1,7 @@
 package com.example.springboot.thriveuniversitybackend.student.services;
 
 import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
+import com.example.springboot.thriveuniversitybackend.student.models.AcademicYear;
 import com.example.springboot.thriveuniversitybackend.student.models.Student;
 import com.example.springboot.thriveuniversitybackend.student.repositories.StudentRepository;
 import jakarta.transaction.Transactional;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -80,6 +83,24 @@ public class StudentService {
 
     public String getPersonalEmailByUserId(String userId) {
         return repository.findPersonalEmailByUserId(userId).getPersonalEmail();
+    }
+
+    public List<String> getRollNosByAcademicDetails(AcademicYear academicYear, String department, String section) {
+        return repository.findRollNosByAcademicDetails(academicYear, department, section).stream().map(Student::getRollNo).collect(Collectors.toList());
+    }
+
+    public List<String> getRollNosByDepartment(AcademicYear academicYear, List<String> departments) {
+        return repository.findRollNosByDepartment(academicYear, departments).stream().map(Student::getRollNo).collect(Collectors.toList());
+    }
+
+    public boolean checkIfRollNumbersExist(List<String> pendingRollNos) {
+        long count = repository.findAllByRollNo(pendingRollNos);
+        return pendingRollNos.size() == count;
+    }
+
+    public String getRollNoByUserId(String userId) {
+        Student student = repository.findByUserId(userId);
+        return student.getRollNo();
     }
 
 
