@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class TeacherDto {
+    private String name;
+    private String email;
     private String mobileNumber;
     private String personalEmail;
     private String department;

@@ -7,6 +7,8 @@ import java.time.LocalDate;
 
 @Data
 public class UpdateProfileDto {
+    private String name;
+    private String email;
     private String rollNo;
     private AcademicYear academicYear;
     private String fatherName;

@@ -3,6 +3,7 @@ package com.example.springboot.thriveuniversitybackend.admin.controllers;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.SuccessResponseDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UserRegisterDto;
 import com.example.springboot.thriveuniversitybackend.Public.services.UserService;
+import com.example.springboot.thriveuniversitybackend.admin.dtos.PublicNotificationDto;
 import com.example.springboot.thriveuniversitybackend.admin.dtos.SubjectDto;
 import com.example.springboot.thriveuniversitybackend.admin.services.AdminService;
 import com.example.springboot.thriveuniversitybackend.mail.MailService;
@@ -44,6 +45,18 @@ public class AdminController {
     public ResponseEntity registerUser(@RequestBody UserRegisterDto userRegisterDto){
         userService.saveUser(userRegisterDto);
         return ResponseEntity.ok("Successfully saved the user.");
+    }
+
+    @PostMapping("/postPublicNotification")
+    public ResponseEntity postNotification(@RequestBody PublicNotificationDto publicNotificationDto){
+        adminService.saveNotification(publicNotificationDto);
+        return ResponseEntity.ok(new SuccessResponseDto<>("Successfully saved the notification", null));
+    }
+
+    @GetMapping("/getLatestPublicNotifications")
+    public ResponseEntity getLatestPublicNotifications(@RequestParam("limit") Long limit){
+        List<PublicNotificationDto> publicNotificationDtos = adminService.getLatestNotifications(limit);
+        return ResponseEntity.ok(new SuccessResponseDto<>("Successfully retrieved the latest notifications", publicNotificationDtos));
     }
 
 }

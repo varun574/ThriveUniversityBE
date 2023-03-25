@@ -1,5 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.student.models;
 
+import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
 import com.example.springboot.thriveuniversitybackend.enums.Department;
 import com.example.springboot.thriveuniversitybackend.enums.EducationLevel;
 import com.example.springboot.thriveuniversitybackend.enums.Section;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Document("students")
 @Data
@@ -58,4 +60,5 @@ public class Student {
     private String educationLevel;
     @NullableNonEmpty(message = "Address must not be empty")
     private String address;
+    private List<Attachment> certificates;
 }

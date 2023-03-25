@@ -57,6 +57,12 @@ public class PublicExceptionController {
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler({UserNotAllowedToUseException.class})
+    public ResponseEntity<ErrorResponseDto> exception(UserNotAllowedToUseException exception){
+        ErrorResponseDto response = new ErrorResponseDto(exception.getMessage(), HttpStatus.METHOD_NOT_ALLOWED.value(), null);
+        return new ResponseEntity<>(response, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<ErrorResponseDto> constraintException(ConstraintViolationException exception, HttpSession session){
         HashMap<String, String> errors = new HashMap<>();

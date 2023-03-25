@@ -4,5 +4,6 @@ public enum AttachmentTypes {
 
     PROFILE_PICTURE,
     ASSIGNMENT,
+    CERTIFICATE,
     ANONYMOUS;
 }

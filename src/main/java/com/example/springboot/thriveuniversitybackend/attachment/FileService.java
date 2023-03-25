@@ -4,7 +4,6 @@ import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.ServiceAccountCredentials;
 import com.google.cloud.storage.*;
-import com.google.firebase.cloud.StorageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -54,7 +53,7 @@ public class FileService {
         String filename = multipartFile.getOriginalFilename();
         String contentType = fileNameMap.getContentTypeFor(filename);
         if(uploadedFileName.equals(AttachmentTypes.ANONYMOUS.name()))
-        uploadedFileName = generateFileName(filename);
+            uploadedFileName = generateFileName(filename);
         File file = convertToFile(multipartFile);
         uploadFile(file, uploadedFileName, contentType);
         file.delete();
@@ -85,7 +84,7 @@ public class FileService {
             return undeletedFiles;
         for (String objectId: objectIds
              ) {
-            if(!(storage.get(BlobId.of(environment.getProperty("firebase.storage.bucket.name"),objectId)).delete()))
+            if(!(delete(objectId)))
                 undeletedFiles.add(objectId);
         }
         return undeletedFiles;
@@ -117,5 +116,9 @@ public class FileService {
 
     private String extractExtension(String fileName){
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public boolean delete(String objectId) {
+        return storage.get(BlobId.of(environment.getProperty("firebase.storage.bucket.name"),objectId)).delete();
     }
 }

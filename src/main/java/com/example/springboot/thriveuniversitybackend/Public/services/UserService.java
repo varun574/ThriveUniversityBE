@@ -7,7 +7,9 @@ import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPassw
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
 import com.example.springboot.thriveuniversitybackend.Public.models.User;
 import com.example.springboot.thriveuniversitybackend.Public.repositories.UserRepository;
+import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
 import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
+import com.example.springboot.thriveuniversitybackend.enums.Certificates;
 import com.example.springboot.thriveuniversitybackend.enums.UserTypes;
 import com.example.springboot.thriveuniversitybackend.attachment.FileService;
 import com.example.springboot.thriveuniversitybackend.otp.OTPService;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.springboot.thriveuniversitybackend.utils.RandomStringGenerator.generateRandomString;
@@ -76,11 +79,15 @@ public class UserService {
         if(type.equals(UserTypes.STUDENT.name())){
             StudentDto studentDto = modelMapper.map(updateProfileDto, StudentDto.class);
             StudentDto updatedStudentDto = studentService.updateProfileByUserId(studentDto, user.getId());
+            updatedStudentDto.setName(user.getName());
+            updatedStudentDto.setEmail(user.getEmail());
             return updatedStudentDto;
         }
         else if(type.equals(UserTypes.TEACHER.name())){
             TeacherDto studentDto = modelMapper.map(updateProfileDto, TeacherDto.class);
             TeacherDto updatedTeacherDto = teacherService.updateProfileByUserId(studentDto, user.getId());
+            updatedTeacherDto.setName(user.getName());
+            updatedTeacherDto.setEmail(user.getEmail());
             return updatedTeacherDto;
         }
         else {
@@ -104,11 +111,26 @@ public class UserService {
         }
         if(type.equals(UserTypes.STUDENT.name())){
             StudentDto studentDto = studentService.getStudentByUserId(user.getId());
+            studentDto.setName(user.getName());
+            studentDto.setEmail(user.getEmail());
             studentDto.setProfilePictureURL(profilePictureURL);
+            List<Attachment> certificates = studentDto.getCertificates();
+            try {
+                for (int i = 0; i < Certificates.values().length; i++) {
+                    if(certificates.get(i) != null){
+                        Attachment certificate = certificates.get(i);
+                        certificate.setUrl(fileService.download(certificates.get(i).getHashedFileName()));
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             return studentDto;
         }
         else if(type.equals(UserTypes.TEACHER.name())){
             TeacherDto teacherDto = teacherService.getTeacherByUserId(user.getId());
+            teacherDto.setName(user.getName());
+            teacherDto.setEmail(user.getEmail());
             teacherDto.setProfilePictureURL(profilePictureURL);
             return teacherDto;
         }
