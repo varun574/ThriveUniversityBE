@@ -1,13 +1,17 @@
 package com.example.springboot.thriveuniversitybackend.Public.services;
 
+import com.example.springboot.thriveuniversitybackend.Public.dtos.AdmissionDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.LoginDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UpdateProfileDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.UserRegisterDto;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.OldPasswardDoNotMatchException;
 import com.example.springboot.thriveuniversitybackend.Public.exceptions.UserNotFoundException;
+import com.example.springboot.thriveuniversitybackend.Public.models.Admission;
 import com.example.springboot.thriveuniversitybackend.Public.models.User;
+import com.example.springboot.thriveuniversitybackend.Public.repositories.AdmissionRepository;
 import com.example.springboot.thriveuniversitybackend.Public.repositories.UserRepository;
 import com.example.springboot.thriveuniversitybackend.attachment.Attachment;
+import com.example.springboot.thriveuniversitybackend.enums.AdmissionStatus;
 import com.example.springboot.thriveuniversitybackend.enums.AttachmentTypes;
 import com.example.springboot.thriveuniversitybackend.enums.Certificates;
 import com.example.springboot.thriveuniversitybackend.enums.UserTypes;
@@ -17,6 +21,11 @@ import com.example.springboot.thriveuniversitybackend.student.dtos.StudentDto;
 import com.example.springboot.thriveuniversitybackend.student.services.StudentService;
 import com.example.springboot.thriveuniversitybackend.teacher.dtos.TeacherDto;
 import com.example.springboot.thriveuniversitybackend.teacher.services.TeacherService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.NoArgGenerator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +41,9 @@ import static com.example.springboot.thriveuniversitybackend.utils.RandomStringG
 public class UserService {
     @Autowired
     private UserRepository repository;
+
+    @Autowired
+    private AdmissionRepository admissionRepository;
 
     @Autowired
     private StudentService studentService;
@@ -167,4 +179,39 @@ public class UserService {
         return user.orElseThrow(() -> new UserNotFoundException("User Not found")).getEmail();
     }
 
+    public String applyForAdmission(AdmissionDto admissionDto, MultipartFile[] educationFiles, MultipartFile[] examFiles) throws IOException {
+        NoArgGenerator timeBasedGenerator = Generators.timeBasedGenerator();
+        for (int i = 0; i < educationFiles.length; i++) {
+            String hashedFileName = timeBasedGenerator.generate().toString() + "_" + AttachmentTypes.ADMISSION_EDUCATION.name();
+            fileService.upload(educationFiles[i], hashedFileName);
+            Attachment attachment = Attachment.builder()
+                    .hashedFileName(hashedFileName)
+                    .fileName(educationFiles[i].getOriginalFilename())
+                    .url(fileService.getDownloadURL(hashedFileName))
+                    .build();
+            admissionDto.getEducation()[i].setFile(attachment);
+        }
+        for (int i = 0; i < examFiles.length; i++) {
+            String hashedFileName = timeBasedGenerator.generate().toString() + "_" + AttachmentTypes.ADMISSION_EXAM.name();
+            fileService.upload(examFiles[i], hashedFileName);
+            Attachment attachment = Attachment.builder()
+                    .hashedFileName(hashedFileName)
+                    .fileName(examFiles[i].getOriginalFilename())
+                    .url(fileService.getDownloadURL(hashedFileName))
+                    .build();
+            admissionDto.getExam_details()[i].setUploaded_score(attachment);
+        }
+        String trackingId = generateRandomString(48, 122, 10);
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        ObjectWriter ow = objectMapper.writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(admissionDto);
+        Admission admission = Admission.builder()
+                .data(json)
+                .trackingId(trackingId)
+                .status(AdmissionStatus.APPLICATION_RECEIVED.name())
+                .build();
+        admissionRepository.save(admission);
+        return trackingId;
+    }
 }

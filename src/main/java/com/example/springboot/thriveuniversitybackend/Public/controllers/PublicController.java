@@ -1,5 +1,6 @@
 package com.example.springboot.thriveuniversitybackend.Public.controllers;
 
+import com.example.springboot.thriveuniversitybackend.Public.dtos.AdmissionDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.ForgotPasswordDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.LoginDto;
 import com.example.springboot.thriveuniversitybackend.Public.dtos.SuccessResponseDto;
@@ -18,6 +19,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
@@ -62,5 +66,20 @@ public class PublicController {
                                           String email){
         userService.sendOtpMail(email);
         return ResponseEntity.ok(new SuccessResponseDto<>("OTP generated successfully. Please check your mail box.", null));
+    }
+
+    @PostMapping("/apply")
+    public ResponseEntity applyForAdmission(@ModelAttribute AdmissionDto admissionDto,
+                                            @RequestParam("educationFiles") MultipartFile[] educationFiles,
+                                            @RequestParam("examFiles") MultipartFile[] examFiles){
+        String trackingId = "";
+        try {
+            trackingId = userService.applyForAdmission(admissionDto, educationFiles, examFiles);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        HashMap<String, String> data = new HashMap<>();
+        data.put("trackingId", trackingId);
+        return ResponseEntity.ok(new SuccessResponseDto<>("Successfully applied for admission. Please find the below tracking id to track your application.", data));
     }
 }
